@@ -1,180 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>For You</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>For You</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-    body {
-      margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at top, #120c1a, #05040a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #f2f2f2;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  height: 100vh;
+  background:
+    radial-gradient(circle at center, rgba(160,20,50,0.35), rgba(0,0,0,0.95)),
+    #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 
-    /* Stars */
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      opacity: 0.8;
-      animation: twinkle infinite alternate;
-    }
+/* Background nickname */
+.bg-name {
+  position: absolute;
+  font-size: 6rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.03);
+  text-shadow: 0 0 40px rgba(255,80,110,0.35);
+  letter-spacing: 0.4rem;
+  user-select: none;
+}
 
-    @keyframes twinkle {
-      from { opacity: 0.3; }
-      to { opacity: 0.9; }
-    }
+/* Stars */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255,255,255,0.9);
+  animation: float linear infinite;
+}
 
-    /* Gift box */
-    .gift {
-      width: 160px;
-      height: 120px;
-      border: 2px solid #ff4d6d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.6s ease, opacity 0.6s ease;
-      z-index: 3;
-    }
+/* Ivy leaves */
+.ivy {
+  position: absolute;
+  font-size: 18px;
+  color: #6fbf73;
+  opacity: 0.85;
+  text-shadow: 0 0 6px rgba(120,200,140,0.6);
+  animation: float linear infinite;
+}
 
-    .gift:hover {
-      transform: scale(1.05);
-    }
+@keyframes float {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-120vh); opacity: 0; }
+}
 
-    .gift span {
-      font-size: 1rem;
-      color: #ff4d6d;
-      letter-spacing: 0.5px;
-    }
+/* Screens */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+}
 
-    .gift.opened {
-      opacity: 0;
-      transform: scale(0.8);
-      pointer-events: none;
-    }
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-    /* Message */
-    .container {
-      text-align: center;
-      max-width: 520px;
-      padding: 2rem;
-      opacity: 0;
-      z-index: 2;
-    }
+.content {
+  max-width: 540px;
+}
 
-    .container.show {
-      animation: fadeIn 2s ease forwards;
-    }
+h1, p {
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.6),
+    0 0 16px rgba(255,255,255,0.25);
+}
 
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      margin-bottom: 1.6rem;
-    }
+h1 {
+  font-size: 2.4rem;
+  margin-bottom: 1.6rem;
+}
 
-    .line {
-      font-size: 1.15rem;
-      line-height: 1.8;
-      margin-bottom: 1rem;
-      opacity: 0;
-      animation: reveal 1.8s ease forwards;
-    }
+p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
 
-    .line:nth-of-type(1) { animation-delay: 1.2s; }
-    .line:nth-of-type(2) { animation-delay: 2.4s; }
-    .line:nth-of-type(3) { animation-delay: 3.6s; }
+.tap {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
 
-    .accent {
-      color: #ff4d6d;
-    }
+/* Game */
+.leaf-btn {
+  font-size: 2.2rem;
+  margin: 0.7rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
 
-    footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 0.85rem;
-      opacity: 0;
-      animation: fadeIn 2s ease forwards;
-      animation-delay: 5.2s;
-    }
+.leaf-btn:hover {
+  transform: scale(1.2);
+}
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+.score {
+  margin-top: 1rem;
+  opacity: 0.8;
+}
 
-    @keyframes reveal {
-      to { opacity: 1; }
-    }
-  </style>
+/* Final reveal */
+.final {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.final.show {
+  opacity: 1;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Gift box -->
-  <div class="gift" id="gift">
-    <span>open</span>
+<div class="bg-name">harls</div>
+
+<!-- Screen 1 -->
+<div class="screen active">
+  <div class="content">
+    <h1>Mi amor.</h1>
+    <p>You’re the person I want to tell everything to.</p>
+    <p class="tap">(tap anywhere)</p>
   </div>
+</div>
 
-  <!-- Message -->
-  <div class="container" id="message">
-    <h1>Meine Liebe.</h1>
-
-    <div class="line">
-      You’re the person I want to tell everything to.
-    </div>
-
-    <div class="line">
+<!-- Screen 2 -->
+<div class="screen">
+  <div class="content">
+    <p>
       The one I trust, laugh with,
-      and somehow still miss even when you’re right here.
+      and somehow still miss
+      even when you’re right here.
+    </p>
+    <p class="tap">(tap anywhere)</p>
+  </div>
+</div>
+
+<!-- Screen 3 -->
+<div class="screen">
+  <div class="content">
+    <p>You don’t just feel like my <strong>wife</strong>.</p>
+    <p>
+      You feel like my <strong>best friend</strong>,
+      and <strong>the person I build with</strong>.
+    </p>
+    <p class="tap">(tap anywhere)</p>
+  </div>
+</div>
+
+<!-- Screen 4 -->
+<div class="screen">
+  <div class="content">
+    <p>You’re the <em>Harley</em> to my <em>Ivy</em>.</p>
+    <p>
+      A little chaotic. Completely chosen.
+      Better together than apart.
+    </p>
+    <p class="tap">(tap anywhere)</p>
+  </div>
+</div>
+
+<!-- Screen 5 - Game -->
+<div class="screen">
+  <div class="content">
+    <h1>One more thing.</h1>
+    <p>Collect the ivy 🍃</p>
+
+    <div>
+      <span class="leaf-btn">🍃</span>
+      <span class="leaf-btn">🍃</span>
+      <span class="leaf-btn">🍃</span>
     </div>
 
-    <div class="line">
-      You don’t just feel like my <span class="accent">wife</span>.
-      You feel like my <span class="accent">best friend</span>,
-      and <span class="accent">the person I build with</span>.
+    <div class="score">
+      Ivy collected: <span id="score">0</span>
+    </div>
+
+    <div class="final" id="finalLine">
+      I love you.<br>
+      <em>Now and forever.</em>
     </div>
   </div>
+</div>
 
-  <footer>
-    Happy Valentine’s Day
-  </footer>
+<script>
+/* Screens */
+const screens = document.querySelectorAll('.screen');
+let current = 0;
 
-  <script>
-    // Create stars
-    for (let i = 0; i < 80; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      const size = Math.random() * 2 + 1;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.left = Math.random() * 100 + 'vw';
-      star.style.top = Math.random() * 100 + 'vh';
-      star.style.animationDuration = (2 + Math.random() * 4) + 's';
-      document.body.appendChild(star);
+document.addEventListener('click', () => {
+  if (current < screens.length - 1) {
+    screens[current].classList.remove('active');
+    current++;
+    screens[current].classList.add('active');
+  }
+});
+
+/* Stars */
+function star() {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.bottom = '-10px';
+  s.style.animationDuration = 4 + Math.random() * 4 + 's';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 8000);
+}
+
+/* Ivy float */
+function ivy() {
+  const i = document.createElement('div');
+  i.className = 'ivy';
+  i.textContent = '🍃';
+  i.style.left = Math.random() * 100 + 'vw';
+  i.style.bottom = '-10px';
+  i.style.animationDuration = 5 + Math.random() * 5 + 's';
+  document.body.appendChild(i);
+  setTimeout(() => i.remove(), 10000);
+}
+
+setInterval(star, 300);
+setInterval(ivy, 700);
+
+/* Game logic */
+let score = 0;
+const finalLine = document.getElementById('finalLine');
+
+document.querySelectorAll('.leaf-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (btn.textContent !== '✨') {
+      score++;
+      btn.textContent = '✨';
+      document.getElementById('score').textContent = score;
+      if (score === 3) {
+        finalLine.classList.add('show');
+      }
     }
-
-    // Gift open interaction
-    const gift = document.getElementById('gift');
-    const message = document.getElementById('message');
-
-    gift.addEventListener('click', () => {
-      gift.classList.add('opened');
-      setTimeout(() => {
-        message.classList.add('show');
-      }, 600);
-    });
-  </script>
+  });
+});
+</script>
 
 </body>
 </html>
